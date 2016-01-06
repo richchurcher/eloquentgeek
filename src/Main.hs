@@ -11,14 +11,34 @@ main = quickHttpServe site
 
 site :: Snap ()
 site =
-    ifTop (writeBS "hello world") <|>
-    route [ ("foo", writeBS "bar")
-          , ("echo/:echoparam", echoHandler)
+    ifTop (writeBS "eg") <|>
+    route [ ("posts",     method GET    getPosts)
+          , ("posts",     method POST   createPost)
+          , ("posts/:id", method GET    getPost)
+          , ("posts/:id", method PUT    updatePost)
+          , ("posts/:id", method DELETE deletePost)
           ] <|>
-    dir "static" (serveDirectory ".")
+    dir "static" (serveDirectory "static")
 
-echoHandler :: Snap ()
-echoHandler = do
-    param <- getParam "echoparam"
-    maybe (writeBS "must specify echo/param in URL")
-          writeBS param
+getPosts :: Snap ()
+getPosts = do
+    writeBS "[]"
+
+createPost :: Snap ()
+createPost = do
+    writeBS "POST"
+
+getPost :: Snap ()
+getPost = do
+    param <- getParam "id"
+    writeBS "GET"
+
+updatePost :: Snap ()
+updatePost = do
+    param <- getParam "id"
+    writeBS "PUT"
+
+deletePost :: Snap ()
+deletePost = do
+    param <- getParam "id"
+    writeBS "DELETE"
